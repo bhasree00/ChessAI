@@ -572,7 +572,7 @@ class AI(BaseAI):
         bestPotentialScore = -math.inf
         tieScoreList = []
 
-        percentageOfTime = 0.022 # 2.2%
+        percentageOfTime = 0.01 # 2.2%
         d = 0
         t0 = calendar.timegm(time.gmtime())
         timeTurn = t0 + (timeLeft * percentageOfTime)
@@ -587,7 +587,7 @@ class AI(BaseAI):
                     if m == castle:
                         board = self.convertFromUCIandUpdateBoard(castlingPairs[castle], board)
 
-                potential = self.minValue(board, d, -math.inf)
+                potential = self.minValue(board, d, -math.inf, math.inf)
                 
                 # What if multiple moves have the same best hueristic?
                 # This section resolves that by placing them into a list
@@ -632,7 +632,7 @@ class AI(BaseAI):
 
             potentialScore = self.maxValue(board, d-1, alpha, beta)
             if vMinValue <= alpha: return vMinValue
-            beta = max(beta, vMaxValue)
+            beta = max(beta, vMinValue)
             if potentialScore <= vMinValue:
                 vMinValue = potentialScore
             
