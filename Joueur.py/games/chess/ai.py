@@ -612,22 +612,14 @@ class AI(BaseAI):
         else: return bestMove
     
     # Opponent attempts to minimize the player's score
-    def minValue(self, board, depth, alpha, beta):
         oppositeDic = {"white":"b", "black":"w"}
-        
-        if depth == 0: return self.hVal(board, self.player.color)
-
         stableBoard = board[:]
         tempFen = ["", oppositeDic[self.player.color]]
 
         # Generate all of the possible moves that the opponent could respond with
         opponentChoices = self.generateOpponentMoves(board, tempFen)
         # Find the move that the opponent might make that would minimize the player's score
-        vMinValue = math.inf # I've instantiated this to just over the max possible score to avoid accientally returning the wrong value
         
-        for o in opponentChoices:
-            # Generate a temp board of the result of the opponent's chosen move
-            board = self.convertFromUCIandUpdateBoard(o, stableBoard)
 
             potentialScore = self.maxValue(board, depth-1)
             if vMinValue <= alpha: return vMinValue
