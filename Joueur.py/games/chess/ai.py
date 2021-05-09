@@ -226,10 +226,11 @@ class AI(BaseAI):
             # moveChoiceIndex = random.randint(0, len(moveChoices)-1)
             # chosenMove = moveChoices[moveChoiceIndex]
 
-            minimaxDepth = 2
+            # minimaxDepth = 2
+            timeRemaining  = self.player.time_remaining / 1000000000 # Converting from ns to s
             # while chosenMove not in self.game.history:
             moveChoicesCopy = moveChoices[:]
-            chosenMove = self.alphaBetaSearch(moveChoices, board, minimaxDepth, gameFen)
+            chosenMove = self.alphaBetaSearch(moveChoices, board, timeRemaining, gameFen)
             # for i in range(len(moveChoices)):
             #     if chosenMove in self.game.history:
             #         # print("\t------RECHOSEN------")
@@ -546,7 +547,7 @@ class AI(BaseAI):
         return enPassantMoves
 
 
-#------GAME ASSIGNMENT 2 FUNCTIONS------
+#------GAME ASSIGNMENT 3 FUNCTIONS------
 # NOTE: the heurstic evaluator function determines how many points a player still has on the board
 # and creates the priority queue based off of that. The maximum points that a player can have on
 # the board is 8(1)+2(3)+2(3)+2(5)+1(9) = 39
@@ -563,7 +564,7 @@ class AI(BaseAI):
                     remainingScore += blackPoints[file]
         return remainingScore
 
-    #------Depth-Limited Minimax functions
+    #------Time-Limited Minimax with Alpha-Beta Pruning functions
     # Here we find every possible minimax score (heuristic) that we
     # could attain, selecting only the best one as our chosen move
     def alphaBetaSearch(self, moveChoices, board, timeLeft, currGameFen):
@@ -586,7 +587,7 @@ class AI(BaseAI):
                     if m == castle:
                         board = self.convertFromUCIandUpdateBoard(castlingPairs[castle], board)
 
-                potential = self.minValue(board, depth, -math.inf)
+                potential = self.minValue(board, d, -math.inf)
                 
                 # What if multiple moves have the same best hueristic?
                 # This section resolves that by placing them into a list
@@ -612,10 +613,10 @@ class AI(BaseAI):
         else: return bestMove
     
     # Opponent attempts to minimize the player's score
-    def minValue(self, board, depth, alpha, beta):
+    def minValue(self, board, d, alpha, beta):
         oppositeDic = {"white":"b", "black":"w"}
         
-        if depth == 0: return self.hVal(board, self.player.color)
+        if d == 0: return self.hVal(board, self.player.color)
 
         stableBoard = board[:]
         tempFen = ["", oppositeDic[self.player.color]]
@@ -629,7 +630,7 @@ class AI(BaseAI):
             # Generate a temp board of the result of the opponent's chosen move
             board = self.convertFromUCIandUpdateBoard(o, stableBoard)
 
-            potentialScore = self.maxValue(board, depth-1)
+            potentialScore = self.maxValue(board, d-1, alpha, beta)
             if vMinValue <= alpha: return vMinValue
             beta = max(beta, vMaxValue)
             if potentialScore <= vMinValue:
@@ -639,8 +640,8 @@ class AI(BaseAI):
         return vMinValue
 
     # Player attempts to maximize their score
-    def maxValue(self, board, depth, alpha, beta):
-        if depth == 0: return self.hVal(board, self.player.color)
+    def maxValue(self, board, d, alpha, beta):
+        if d == 0: return self.hVal(board, self.player.color)
 
         stableBoard = board[:]
         tempFen = ["", self.player.color]
@@ -654,7 +655,7 @@ class AI(BaseAI):
             # Generate a temp board of the result of the opponent's chosen move
             board = self.convertFromUCIandUpdateBoard(r, stableBoard)
 
-            potentialScore = self.minValue(board, depth-1, alpha, beta)
+            potentialScore = self.minValue(board, d-1, alpha, beta)
             if vMaxValue <= beta: return vMaxValue
             alpha = max(alpha, vMaxValue)
             if potentialScore <= vMaxValue:
