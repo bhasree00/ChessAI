@@ -572,7 +572,7 @@ class AI(BaseAI):
         bestPotentialScore = -math.inf
         tieScoreList = []
 
-        percentageOfTime = 0.01 # 2.2%
+        percentageOfTime = 0.005
         d = 0
         t0 = calendar.timegm(time.gmtime())
         timeTurn = t0 + (timeLeft * percentageOfTime)
