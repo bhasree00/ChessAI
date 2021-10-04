@@ -1,4 +1,16 @@
 #################################
+#	   Introduction		#
+#################################
+
+This project was one completed in an AI class in which I was tasked to build the framework off of which two
+agents in a game of chess would compete with each other.
+The culmination of all we had learned that semester, this project was the successful implementation of an advanced
+algorithm meant to incentivize taking pieces and protecting the king by planning out all possible move sets some _n_
+moves in advance.
+This was further refined using a time-limited minimax determiner with alpha-beta pruning and a heuristic evaluator.
+
+
+#################################
 #	Coding Standards	#
 #################################
 
